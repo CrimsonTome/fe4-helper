@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='css/style.css') }}">
+        <title>First Generation Character Stats</title>
+    </head>
+    <body>
+        <header>
+            <h1>First Generation Character Stats</h1>
+            <p>View the base stats of characters from the first generation of Fire Emblem: Genealogy of the Holy War.</p>
+            <p>
+                Notes: Holy Bloods in bold are major. Deirdre's Renewal and Miracle skills come from her Circlet item which
+                she joins with.
+            </p>
+        </header>
+        <main>
+            <table>
+                {% for row in csv %}
+                    <tr>
+                        {% if loop.first %}
+                            {# Render table header row, skipping Holy_Blood_Tier column (index 14) #}
+                            {% for col in row %}
+                                {% if loop.index0 != 14 %}
+                                    <th>{{ col | replace('"', '') | replace('_', ' ') | replace('null', '---') }}</th>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            {# Render table data rows #}
+                            {% for col in row %}
+                                {% if loop.index0 == 13 %}
+                                    {# Handle Holy_Blood column: bold blood types with Major tier #}
+                                    {% set bloods = col.split(',') %}
+                                    {% set tiers = row[14].split(',') %}
+                                    <td>
+                                        {% for i in range(bloods|length) %}
+                                            {% if tiers[i].strip() == 'Major' %}
+                                                <b>{{ bloods[i].strip() | replace('"', '') | replace('_', ' ') | replace('null', '---') }}</b>
+                                            {% else %}
+                                                {{ bloods[i].strip() | replace('"', '') | replace('_', ' ') | replace('null', '---') }}
+                                            {% endif %}
+                                            {# Add comma between blood types #}
+                                            {% if not loop.last and i + 1 < bloods|length %},{% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% elif loop.index0 != 14 %}
+                                    {# Render other columns #}
+                                    <td>{{ col | replace('"', '') | replace('_', ' ') | replace('null', '---') }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </main>
+        <footer>
+            <p>
+                Created with ❤️ by <a href="https://github.com/crimsontome">crimsontome</a>
+            </p>
+            <p>
+                Source code available on <a href="https://github.com/crimsontome/fe4-helper">Github</a>
+            </p>
+        </footer>
+    </body>
+</html>

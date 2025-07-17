@@ -1,0 +1,14 @@
+[project]
+name = "fe4-helper"
+version = "0.1.0"
+description = "A helper application for Fire Emblem 4 written in Python using Flask"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "djlint>=1.36.4",
+]
